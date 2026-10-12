@@ -23,7 +23,10 @@
     "gen:i18n": "node --experimental-strip-types tools/gen-i18n-types.ts",
     "check:i18n": "node --experimental-strip-types tools/check-translations.ts",
     "prebuild": "npm run gen:i18n",
-    "pretest": "npm run gen:i18n"
+    "pretest": "npm run gen:i18n",
+    "gateway": "node --env-file=gateway/.env --experimental-strip-types gateway/server.ts",
+    "typecheck": "tsc && tsc -p gateway",
+    "pretypecheck": "npm run gen:i18n"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.71",
@@ -37,8 +40,10 @@
     "@ai-sdk/xai": "^3.0.83",
     "@fluentui/react-components": "^9.73.7",
     "@fluentui/react-icons": "^2.0.324",
+    "@hono/node-server": "^1.19.17",
     "@openrouter/ai-sdk-provider": "^2.9.0",
     "ai": "^6.0.168",
+    "hono": "^4.13.13",
     "ollama-ai-provider-v2": "^3.5.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
@@ -49,6 +54,7 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^22.20.5",
     "@types/office-js": "^1.0.589",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",

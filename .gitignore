@@ -4,3 +4,6 @@ installer/files
 installer/AutoOffice-Setup.exe
 .worktrees/
 .DS_Store
+
+# Gateway secrets (copy gateway/.env.example)
+gateway/.env
