@@ -140,7 +140,7 @@ const PROVIDER_MODELS: Record<string, string[]> = {
   'openai-compatible': [],
 };
 
-const PROVIDERS_WITH_BASE_URL = new Set(['openai-compatible', 'openrouter', 'ollama', 'lmstudio', 'openwebui']);
+const PROVIDERS_WITH_BASE_URL = new Set(['lucy-gateway', 'openai-compatible', 'openrouter', 'ollama', 'lmstudio', 'openwebui']);
 
 /** Providers whose model list is discovered from the server they point at. */
 const PROVIDERS_WITH_MODEL_DISCOVERY = new Set(['lmstudio', 'openwebui']);
@@ -219,6 +219,8 @@ export function SettingsPanel({ settings, onChange, onClose }: SettingsPanelProp
 
   const selectedProvider = settings.providers.find(p => p.id === settings.selectedProviderId);
   const models = PROVIDER_MODELS[settings.selectedProviderId] || [];
+  // Lucy Gateway's key field holds the gateway token, not a model API key.
+  const isLucyGateway = settings.selectedProviderId === 'lucy-gateway';
 
   return (
     <div className={styles.container}>
@@ -248,14 +250,14 @@ export function SettingsPanel({ settings, onChange, onClose }: SettingsPanelProp
             <>
               {(!LOCAL_PROVIDER_IDS.has(selectedProvider.id) ||
                 PROVIDERS_WITH_OPTIONAL_API_KEY.has(selectedProvider.id)) && (
-                <Field label={t('settings.apiKeyLabel')}>
+                <Field label={isLucyGateway ? t('settings.gatewayTokenLabel') : t('settings.apiKeyLabel')}>
                   <div className={styles.row}>
                     <Input
                       className={styles.keyInput}
                       type={showKeys[selectedProvider.id] ? 'text' : 'password'}
                       value={selectedProvider.apiKey}
                       onChange={(_, data) => updateProvider(selectedProvider.id, 'apiKey', data.value)}
-                      placeholder={t('settings.apiKeyPlaceholder')}
+                      placeholder={isLucyGateway ? t('settings.gatewayTokenPlaceholder') : t('settings.apiKeyPlaceholder')}
                     />
                     <Button
                       appearance="subtle"

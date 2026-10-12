@@ -28,6 +28,8 @@ const DEFAULT_SETTINGS: AppSettings = {
   selectedProviderId: '',
   selectedModel: '',
   providers: [
+    // Our own gateway (gateway/): it holds the real model key; apiKey here is only the gateway token.
+    { id: 'lucy-gateway', name: 'Lucy Gateway', apiKey: '', baseUrl: 'https://localhost:8787/v1' },
     { id: 'anthropic', name: 'Anthropic', apiKey: '' },
     { id: 'openai', name: 'OpenAI', apiKey: '' },
     { id: 'google', name: 'Google', apiKey: '' },

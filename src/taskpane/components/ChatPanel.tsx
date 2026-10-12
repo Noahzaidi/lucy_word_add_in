@@ -13,6 +13,7 @@ import {
   Settings24Regular,
   History24Regular,
   Add24Regular,
+  TextGrammarWand24Regular,
 } from '@fluentui/react-icons';
 import type { ChatMessage } from '../agent/orchestrator.ts';
 import type { HostContext } from '../host/context.ts';
@@ -118,12 +119,13 @@ interface ChatPanelProps {
   onApprove: (approved: boolean) => void;
   onOpenSettings: () => void;
   onOpenHistory: () => void;
+  onOpenTighten: () => void;
   onNewChat: () => void;
 }
 
 export function ChatPanel({
   host, messages, isLoading, pendingApproval, activeChatHost, cost, providerId,
-  onSend, onApprove, onOpenSettings, onOpenHistory, onNewChat,
+  onSend, onApprove, onOpenSettings, onOpenHistory, onOpenTighten, onNewChat,
 }: ChatPanelProps) {
   const styles = useStyles();
   const { t } = useTranslation();
@@ -207,6 +209,12 @@ export function ChatPanel({
           )}
         </div>
         <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
+          {/* Word only. In browser dev mode the host also reports Word, but there is no Word API. */}
+          {host.kind === 'word' && typeof Word !== 'undefined' && (
+            <Tooltip content={t('tighten.openTooltip')} relationship="label">
+              <Button appearance="subtle" icon={<TextGrammarWand24Regular />} onClick={onOpenTighten} disabled={isLoading} />
+            </Tooltip>
+          )}
           <Tooltip content={t('chat.historyTooltip')} relationship="label">
             <Button appearance="subtle" icon={<History24Regular />} onClick={onOpenHistory} disabled={isLoading} />
           </Tooltip>

@@ -27,6 +27,22 @@ export function createModel(settings: AppSettings): LanguageModel {
   }
 
   switch (provider.id) {
+    case 'lucy-gateway': {
+      // The gateway holds the real model key; provider.apiKey is only the gateway token.
+      if (!provider.baseUrl) {
+        throw new ConfigError('Base URL is required for Lucy Gateway.');
+      }
+      const lucyGateway = createOpenAICompatible({
+        name: 'lucy-gateway',
+        apiKey: provider.apiKey,
+        baseURL: provider.baseUrl,
+        // Lets Tighten ask for a strict JSON schema. Chat sends no response_format, so it is unaffected.
+        supportsStructuredOutputs: true,
+        // OpenAI only reports token usage on streamed replies when asked; keeps the cost badge working.
+        includeUsage: true,
+      });
+      return lucyGateway(settings.selectedModel);
+    }
     case 'anthropic': {
       const anthropic = createAnthropic({
         apiKey: provider.apiKey,

@@ -5,6 +5,7 @@ import type { HostContext, HostKind } from './host/context.ts';
 import { ChatPanel } from './components/ChatPanel.tsx';
 import { SettingsPanel } from './components/SettingsPanel.tsx';
 import { HistoryPanel } from './components/HistoryPanel.tsx';
+import { TightenPanel } from './components/TightenPanel.tsx';
 import { runAgent, type ChatMessage, type OrchestratorCallbacks } from './agent/orchestrator.ts';
 import { generateTitle } from './agent/title.ts';
 import { Sandbox } from './executor/sandbox.ts';
@@ -53,6 +54,7 @@ export function App({ host }: AppProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [showTighten, setShowTighten] = useState(false);
   const [settings, setSettings] = useState<AppSettings>(loadSettings);
 
   useEffect(() => {
@@ -341,6 +343,14 @@ export function App({ host }: AppProps) {
     );
   }
 
+  if (showTighten) {
+    return (
+      <div className={styles.root}>
+        <TightenPanel settings={settings} onClose={() => setShowTighten(false)} />
+      </div>
+    );
+  }
+
   return (
     <div className={styles.root}>
       <ChatPanel
@@ -355,6 +365,7 @@ export function App({ host }: AppProps) {
         onApprove={handleApprove}
         onOpenSettings={() => setShowSettings(true)}
         onOpenHistory={() => setShowHistory(true)}
+        onOpenTighten={() => setShowTighten(true)}
         onNewChat={handleNewChat}
       />
     </div>
