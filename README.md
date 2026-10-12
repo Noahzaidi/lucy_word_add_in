@@ -6,6 +6,36 @@
 
 <p align="center">AI-powered Microsoft Word + Excel + PowerPoint + Outlook add-in that writes and executes real <code>office.js</code> code on demand.</p>
 
+## Tighten + Lucy Gateway (this fork)
+
+This fork adds two things on top of autoOffice. Design, verification and limitations are in [NOTES.md](NOTES.md).
+
+- **Lucy Gateway** ([gateway/](gateway/)): a small HTTPS server that holds the model API key. The add-in calls it with a bearer token, and it forwards to any OpenAI-compatible endpoint. With the "Lucy Gateway" provider selected, no model key is in the add-in.
+- **Tighten** (Word): select paragraphs and click the wand button. The model proposes a tighter version of each paragraph, and you see a before/after preview. **Accept** writes it, **Reject** leaves the document untouched, and **Undo** restores the original. Tighten never runs model-written code, and headings and list items keep their style.
+
+**You need:** Node 22+, Chrome or Edge, a free Microsoft account (Word on the web), and an OpenAI-compatible API key.
+
+```bash
+git clone <this-repo-url> autoOffice && cd autoOffice
+npm install
+npm run certs                          # trust https://localhost (accept the prompt)
+cp gateway/.env.example gateway/.env   # fill in GATEWAY_TOKEN, UPSTREAM_API_KEY, ALLOWED_MODELS
+npm run gateway                        # terminal 1: https://localhost:8787
+npm run dev                            # terminal 2: https://localhost:3721
+```
+
+**Then in Word on the web**
+1. Open a document, then go to **Home → Add-ins → More Add-ins → My Add-ins → Upload My Add-in** and pick `manifest.xml`.
+2. In the add-in, open **Settings**:
+   - Provider: **Lucy Gateway**
+   - Gateway token: the value of `GATEWAY_TOKEN`
+   - Model: one of `ALLOWED_MODELS`, e.g. `gpt-4.1-mini`
+3. Select paragraphs and click the wand (**Tighten**) button.
+
+**Checks**
+- `npm test` and `npm run typecheck` (no Office needed).
+- `curl https://localhost:8787/health` should return `{"ok":true}`. On Windows, add `--ssl-no-revoke`, because Windows' curl can't check revocation for a local dev certificate.
+
 ## What It Does
 
 AutoOffice is a task-pane add-in you chat with. Describe what you want — for Word ("make all headings blue", "insert a 3-column table"), Excel ("put 1 through 10 in column A", "build a column chart from B2:D8"), or PowerPoint ("add a slide titled 'Q3 plan' with three bullets", "make every slide title bold") — and the agent:
