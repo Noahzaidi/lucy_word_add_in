@@ -2,13 +2,16 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import https from 'https';
 import http from 'http';
 
 // Try to load dev certs for HTTPS (required for Office sideloading)
 function getHttpsConfig() {
-  const certDir = path.resolve(process.env.HOME || '', '.office-addin-dev-certs');
+  // os.homedir(), not $HOME: HOME is unset in PowerShell/cmd on Windows, which
+  // silently drops the dev server back to plain HTTP.
+  const certDir = path.join(os.homedir(), '.office-addin-dev-certs');
   const certFile = path.join(certDir, 'localhost.crt');
   const keyFile = path.join(certDir, 'localhost.key');
   if (fs.existsSync(certFile) && fs.existsSync(keyFile)) {
